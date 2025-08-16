@@ -1,0 +1,118 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include "itextpdf.h" //PDF library
+
+using namespace std;
+
+//Bike class
+class Bike {
+private:
+string brand;
+string model;
+string imageFilePath;
+double price;
+
+public:
+Bike(string b, string m, string img, double p){
+brand=b;
+model=m;
+imageFilePath=img;
+price=p;
+}
+
+
+
+string getBrand(){
+  return brand;  
+}
+
+void setPrice(double p){
+  price = p;
+}
+
+double getPrice(){
+  return price;
+}
+};
+
+//Customer class
+class Customer{
+private:
+string name;
+string phone;
+string email;
+string address;
+
+public:
+Customer(string n, string p, string e, string a){
+name=n;
+phone=p;
+email=e;
+address=a;
+}
+
+
+
+string getName(){
+  return name;
+}
+};
+
+//Invoice class
+class Invoice{
+private:
+Customer customer;
+Bike bike;
+string date;
+double amount;
+
+public:
+Invoice(Customer c, Bike b, string d, double a){
+customer=c;
+bike=b;
+date=d;
+amount=a;
+
+}
+
+
+
+void generatePDF(){
+  //PDF generation logic
+  string fileName = customer.getName()+bike.getBrand()+".pdf";
+  PdfWriter writer = PdfWriter(fileName);
+  PdfDocument pdf = new PdfDocument(writer);
+  Document document = new Document(pdf);
+
+  //Add bill details
+  document.Add(new Paragraph(date));
+  document.Add(new Paragraph(customer.getName()));
+  document.Add(new Paragraph(bike.getBrand() + " " + bike.getModel()));
+  document.Add(new Paragraph(to_string(amount)));
+
+  //Add bike image
+  Image img = new Image(bike.imageFilePath); 
+  document.Add(img);
+
+  document.Close();
+}
+};
+
+//Main function
+int main() {
+
+//Create customer
+Customer c1 = Customer("John", "9999999999", "john@example.com", "Address");
+
+//Create bike
+Bike b1 = Bike("SuperBike", "Model X", "bikeimage.jpg", 10000);
+
+//Create invoice
+Invoice inv = Invoice(c1, b1, "17/10/2023", b1.getPrice());
+
+//Generate PDF
+inv.generatePDF();
+
+return 0;
+}
